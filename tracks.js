@@ -1,0 +1,41 @@
+const container = document.getElementById("container");
+
+async function loadJson(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return await response.json();
+}
+
+function openTrack(track) {
+    if (typeof track != "string") return;
+    window.navigation.navigate("notebook.html?track=" + track);
+}
+
+loadJson("tracks/tracks.json").then(async json => {
+    const tracks = await Promise.all(
+        json.tracks.map(track => loadJson(`tracks/${track}/track.json`))
+    );
+
+    container.innerHTML += json.tracks.map((track, i) => {
+        const x = tracks[i];
+        return `
+            <div class="cardContainer">
+                <button onClick="openTrack('${track}')" class="card" ${x.exercises.length > 0 ? "" : "disabled title='coming soon'"}>
+                    <img src="tracks/${track}/icon.svg">
+                    <h2>${x.title}</h2>
+                </button>
+            </div>
+        `;
+    }).join("");
+    
+    container.innerHTML +=  `
+        <div class="cardContainer">
+            <button onClick="openTrack(prompt('track url'))" class="card">
+                <img src="custom.svg">
+                <h2>Custom</h2>
+            </button>
+        </div>
+    `;
+});

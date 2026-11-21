@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/diff@5.2.0/dist/diff.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="topbar">
+        <div style="flex: 1;">
+            <h2 id="exname"></h2>
+        </div>
+
+        <button id="back" disabled>Previous</button>
+        <button class="golden-btn" id="next" disabled>Next</button>
+    </div>
+    <div class="container" id="container">
+        <div id="ipad" class="section"></div>
+        <div class="divider" id="divider"></div>
+        <div class="section" id="editor">
+            <div id="code"></div>
+            <div class="toolbar">
+                <button class="golden-btn" id="submit">Submit</button>
+                <button id="run" disabled>Loading...</button>
+            </div>
+            <pre id="out"></pre>
+        </div>
+    </div>
+
+    <script src="editor.js"></script>
+</body>
+</html>
