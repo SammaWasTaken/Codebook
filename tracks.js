@@ -13,23 +13,29 @@ function openTrack(track) {
     window.navigation.navigate("notebook.html?track=" + track);
 }
 
-loadJson("tracks/tracks.json").then(async json => {
-    const tracks = await Promise.all(
-        json.tracks.map(track => loadJson(`tracks/${track}/track.json`))
-    );
+async function init(params) {
+    try {
+        const json = await loadJson("tracks/tracks.json")
 
-    container.innerHTML += json.tracks.map((track, i) => {
-        const x = tracks[i];
-        return `
-            <div class="cardContainer">
-                <button onClick="openTrack('${track}')" class="card" ${x.exercises.length > 0 ? "" : "disabled title='coming soon'"}>
-                    <img src="tracks/${track}/icon.svg">
-                    <h2>${x.title}</h2>
-                </button>
-            </div>
-        `;
-    }).join("");
-    
+        const tracks = await Promise.all(
+            json.tracks.map(track => loadJson(`tracks/${track}/track.json`))
+        );
+
+        container.innerHTML += json.tracks.map((track, i) => {
+            const x = tracks[i];
+            return `
+                <div class="cardContainer">
+                    <button onClick="openTrack('${track}')" class="card" ${x.exercises.length > 0 ? "" : "disabled title='coming soon'"}>
+                        <img src="tracks/${track}/icon.svg">
+                        <h2>${x.title}</h2>
+                    </button>
+                </div>
+            `;
+        }).join("");
+    } catch (error) {
+        console.error(error);
+    }
+
     container.innerHTML +=  `
         <div class="cardContainer">
             <button onClick="openTrack(prompt('track url'))" class="card">
@@ -38,4 +44,6 @@ loadJson("tracks/tracks.json").then(async json => {
             </button>
         </div>
     `;
-});
+}
+
+init()
