@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/track.schema.json",
+  "title": "Track",
+  "description": "A learning track: an ordered list of exercise files sharing one programming language.",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display title of the track."
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Programming language used by the track's code exercises (e.g. 'python')."
+    },
+    "exercises": {
+      "type": "array",
+      "description": "Ordered list of exercise file names. Each file must conform to the exercise schema.",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^[^/\\\\]+\\.json$"
+      }
+    }
+  },
+  "required": ["title", "language", "exercises"],
+  "additionalProperties": false
+}

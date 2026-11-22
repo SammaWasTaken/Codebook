@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/exercise.schema.json",
+  "title": "Exercise",
+  "description": "A single exercise in the code learning app.",
+  "oneOf": [
+    { "$ref": "#/$defs/codeExercise" },
+    { "$ref": "#/$defs/quitzExercise" }
+  ],
+  "$defs": {
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Display title of the exercise."
+    },
+    "text": {
+      "type": "string",
+      "description": "Markdown content of the exercise. Should include explanations, tasks and hints, since the app is a full learning tool."
+    },
+
+    "codeExercise": {
+      "type": "object",
+      "description": "Exercise where the user fixes or expands starting code.",
+      "properties": {
+        "modal": {
+          "const": "code",
+          "default": "code",
+          "description": "Exercise mode. Optional for code exercises (defaults to 'code')."
+        },
+        "title": { "$ref": "#/$defs/title" },
+        "text": { "$ref": "#/$defs/text" },
+        "code": {
+          "type": "string",
+          "description": "Starting code the user will fix or expand."
+        },
+        "result": {
+          "type": "string",
+          "description": "Expected output. Trimmed and lowercased before being compared to the actual output (the same normalization should be applied to the actual output)."
+        }
+      },
+      "required": ["title", "text", "code", "result"],
+      "additionalProperties": false
+    },
+
+    "quitzExercise": {
+      "type": "object",
+      "description": "Multiple-choice quiz exercise.",
+      "properties": {
+        "modal": {
+          "const": "quitz",
+          "description": "Exercise mode."
+        },
+        "title": { "$ref": "#/$defs/title" },
+        "text": { "$ref": "#/$defs/text" },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The quiz question."
+        },
+        "options": {
+          "type": "object",
+          "description": "Map of option label -> whether it is correct. Shuffled on exercise load.",
+          "minProperties": 2,
+          "additionalProperties": { "type": "boolean" },
+          "not": {
+            "additionalProperties": { "const": false }
+          }
+        }
+      },
+      "required": ["modal", "title", "text", "question", "options"],
+      "additionalProperties": false
+    }
+  }
+}
