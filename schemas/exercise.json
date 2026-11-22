@@ -3,11 +3,17 @@
   "$id": "https://example.com/schemas/exercise.schema.json",
   "title": "Exercise",
   "description": "A single exercise in the code learning app.",
-  "oneOf": [
-    { "$ref": "#/$defs/codeExercise" },
-    { "$ref": "#/$defs/quitzExercise" }
-  ],
+  "if": {
+    "properties": { "modal": { "const": "quiz" } },
+    "required": ["modal"]
+  },
+  "then": { "$ref": "#/$defs/quizExercise" },
+  "else": { "$ref": "#/$defs/codeExercise" },
   "$defs": {
+    "schemaRef": {
+      "type": "string",
+      "description": "URI of the JSON Schema this file conforms to."
+    },
     "title": {
       "type": "string",
       "minLength": 1,
@@ -22,6 +28,7 @@
       "type": "object",
       "description": "Exercise where the user fixes or expands starting code.",
       "properties": {
+        "$schema": { "$ref": "#/$defs/schemaRef" },
         "modal": {
           "const": "code",
           "default": "code",
@@ -42,12 +49,13 @@
       "additionalProperties": false
     },
 
-    "quitzExercise": {
+    "quizExercise": {
       "type": "object",
       "description": "Multiple-choice quiz exercise.",
       "properties": {
+        "$schema": { "$ref": "#/$defs/schemaRef" },
         "modal": {
-          "const": "quitz",
+          "const": "quiz",
           "description": "Exercise mode."
         },
         "title": { "$ref": "#/$defs/title" },
@@ -59,7 +67,7 @@
         },
         "options": {
           "type": "object",
-          "description": "Map of option label -> whether it is correct. Shuffled on exercise load.",
+          "description": "Map of option label -> whether it is correct. Shuffled on exercise load. At least one option must be true.",
           "minProperties": 2,
           "additionalProperties": { "type": "boolean" },
           "not": {

@@ -5,6 +5,10 @@
   "description": "A learning track: an ordered list of exercise files sharing one programming language.",
   "type": "object",
   "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://json-schema.org/draft/2020-12/schema"
+    },
     "title": {
       "type": "string",
       "minLength": 1,
