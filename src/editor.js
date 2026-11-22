@@ -145,7 +145,7 @@ let trackCompare = "";
 let editor;
 
 const editorReady = new Promise((resolve) => {
-    require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs" } });
+    require.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.0/min/vs" } });
     require(["vs/editor/editor.main"], function () {
         editor = monaco.editor.create(codebox, {
             value: "loading your exercise",
@@ -170,6 +170,13 @@ function startWorker() {
     btn.textContent = "Loading...";
 
     worker = new Worker(`workers/${trackData.language}worker.js`);
+
+    worker.onerror = (e) => {
+        btn.textContent = "Failed to load";
+        const err = document.createElement("err");
+        err.textContent = "Worker error: " + (e.message || "failed to load worker script");
+        out.appendChild(err);
+    };
 
     worker.onmessage = (e) => {
         const msg = e.data;

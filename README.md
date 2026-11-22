@@ -12,6 +12,8 @@ in CodeBook, your progress is tracked locally, no account needed.
 
 ### languages supported by the notebook
 - Python
+- Javascript
+- Lua
 
 ## track selection
 ![notepad](assets/screenshot2.png)
