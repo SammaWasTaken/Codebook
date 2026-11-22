@@ -12,6 +12,10 @@ const exname = document.getElementById("exname");
 const divider = document.getElementById("divider");
 const MIN_PANEL = 500;
 
+const editorSection = document.getElementById("editor");
+const quitzSection = document.getElementById("quitz");
+
+
 const codebox = document.getElementById("code");
 const ipad = document.getElementById("ipad");
 
@@ -247,6 +251,15 @@ btn.onclick = () => {
     else if (workerReady) run();
 };
 
+function unlockEx() {
+    next.disabled = false;
+
+    if (ex > saved) {
+        saved = ex;
+        localStorage.setItem(track, ex);
+    }
+}
+
 submit.onclick = async () => {
     if (running || !workerReady) return;
     const completed = await run();
@@ -254,13 +267,8 @@ submit.onclick = async () => {
 
     const data = out.textContent.trim().toLowerCase();
     if (data === trackCompare) {
-        next.disabled = false;
-
-        if (ex > saved) {
-            saved = ex;
-            localStorage.setItem(track, ex);
-        }
-
+        unlockEx();
+        
         complete.currentTime = 0;
         complete.play();
     } else {
@@ -287,6 +295,11 @@ async function loadJson(url) {
     return await response.json();
 }
 
+function disablePanels() {
+    editorSection.hidden = true;
+    quitzSection.hidden = true;
+}
+
 async function reqExerciseUrl(url) {
     let json = await loadJson(url);
 
@@ -294,8 +307,61 @@ async function reqExerciseUrl(url) {
         ADD_TAGS: ["iframe"],
         ADD_ATTR: ["allowfullscreen"],
     });
-    editor.setValue(json.code);
-    trackCompare = json.result.trim().toLocaleLowerCase();
+
+    disablePanels();
+
+    switch (json.modal) {
+        case "quiz":
+            quitzSection.innerHTML = "";
+
+            let lbl = document.createElement("h2");
+            lbl.textContent = json.question;
+
+            lbl.style.maxWidth = "60%";
+            lbl.style.textAlign = "center";
+
+            quitzSection.appendChild(lbl);
+
+            for (const [key, value] of shuffle(Object.entries(json.options))) {
+                let btn = document.createElement("button");
+                btn.classList.add("quitz-btn");
+
+                btn.textContent = key;
+
+                btn.onclick = () => {
+                    if (value) {
+                        btn.classList.add("correct-btn");
+
+                        for (const b of document.getElementsByClassName("quitz-btn")) b.disabled = true;
+
+                        unlockEx();
+
+                        complete.currentTime = 0;
+                        complete.play();
+                    } else {
+                        btn.classList.add("wrong-btn");
+
+                        btn.disabled = true;
+
+                        error.currentTime = 0;
+                        error.play();
+                    }
+                };
+
+                quitzSection.appendChild(btn);
+            }
+
+            quitzSection.hidden = false;
+            break;
+        default:
+            editor.setValue(json.code);
+            trackCompare = json.result.trim().toLocaleLowerCase();
+
+            editorSection.hidden = false;
+            break;
+    }
+
+    
 
     exname.innerText = `${trackData.title}, Ex ${ex + 1}: ${json.title}`;
     document.title = "Codebook - " + exname.innerText;
@@ -323,6 +389,15 @@ next.onclick = () => {
 };
 
 prev.onclick = () => reqExercise(ex - 1);
+
+function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
 
 function reqExercise(num) {
     ex = Math.max(Math.min(Math.min(num, trackData.exercises.length - 1), saved + 1), 0);
