@@ -19,6 +19,11 @@
       "minLength": 1,
       "description": "Programming language used by the track's code exercises (e.g. 'python')."
     },
+    "runtimeWorker": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[^/\\\\]+\\.js$"
+    },
     "exercises": {
       "type": "array",
       "description": "Ordered list of exercise file names. Each file must conform to the exercise schema.",

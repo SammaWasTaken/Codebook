@@ -22,7 +22,7 @@ const ipad = document.getElementById("ipad");
 const params = new URLSearchParams(window.location.search);
 const track = params.get("track") ?? "python";
 const trackurl = isHttpUrl(track)
-    ? track
+    ? track.endsWith('/') ? track : track + "/"
     : `tracks/${track}/`;
 
 if (isHttpUrl(track)) {
@@ -30,8 +30,10 @@ if (isHttpUrl(track)) {
     const ok = confirm(
         `This track is hosted on ${host}.\n\nOnly load tracks from sources you trust. Load it?`
     );
-    if (!ok)
-        window.navigation.navigate("tracks.html");
+    if (!ok) {
+        location.replace("tracks.html");
+        throw new Error("Track load cancelled"); // stops the rest of the script
+    }
 }
 
 let saved = parseInt(localStorage.getItem(track) ?? "-1");
@@ -164,12 +166,26 @@ let workerReady = false;
 let running = false;
 let currentRun = null;
 
-function startWorker() {
+async function startWorker() {
     workerReady = false;
     btn.disabled = true;
     btn.textContent = "Loading...";
 
-    worker = new Worker(`workers/${trackData.language}worker.js`);
+    let req = await loadText(`${trackurl}${trackData.runtimeWorker}`);
+
+    if (req) {
+        let blob = new Blob([req], {
+            type: "text/javascript"
+        });
+
+        worker = new Worker(URL.createObjectURL(blob));
+    } else {
+        btn.textContent = "Failed to load";
+        const err = document.createElement("err");
+        err.textContent = "Could not fetch worker script";
+        out.appendChild(err);
+        return;
+    }
 
     worker.onerror = (e) => {
         btn.textContent = "Failed to load";

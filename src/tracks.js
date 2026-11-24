@@ -30,7 +30,7 @@ async function init(params) {
 
     container.innerHTML +=  `
         <div class="cardContainer">
-            <button onClick="openTrack(prompt('track url'))" class="card">
+            <button onClick="openTrack(encodeURIComponent(prompt('track url')))" class="card">
                 <img src="custom.svg">
                 <h2>Custom</h2>
             </button>
