@@ -11,10 +11,24 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+    <script src="dropdown.js"></script>
+    <script src="utils.js"></script>
 </head>
 <body>
     <div class="topbar">
-        <div style="flex: 1;">
+        <div style="flex: 1; display: flex; align-items: center; gap: 10px;">
+            <button class="dropdown-toggle" aria-controls="dropdown1" onclick="toggleOpen(this)">
+                <svg class="chevron" width="20" height="20" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M2 4l4 4 4-4"/>
+                </svg>
+            </button>
+
+            <div class="dropdown-menu" id="dropdown1">
+                <button onclick="skipToExercise()">Skip to</button>
+                <button onclick="resetProgress()">Reset progress</button>
+            </div>
+
             <h2 id="exname"></h2>
         </div>
 

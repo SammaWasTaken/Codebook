@@ -231,15 +231,6 @@ function stop() {
     finishRun(false);
 }
 
-function isHttpUrl(str) {
-    try {
-        const url = new URL(str);
-        return url.protocol === "http:" || url.protocol === "https:";
-    } catch {
-        return false;
-    }
-}
-
 async function init() {
     const [data] = await Promise.all([
         loadJson(trackurl + "track.json"),
@@ -293,14 +284,6 @@ submit.onclick = async () => {
         error.play();
     }
 };
-
-async function loadJson(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-    }
-    return await response.json();
-}
 
 function disablePanels() {
     editorSection.hidden = true;
@@ -404,6 +387,19 @@ function shuffle(array) {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
+}
+
+function skipToExercise() {
+    window.navigation.navigate(`exskip.html?track=${track}`);
+}
+
+function resetProgress() {
+    if (confirm("do you want to reset progress?"))
+    {
+        saved = -1;
+        localStorage.setItem(track, -1);
+        reqExercise(0);
+    }
 }
 
 function reqExercise(num) {

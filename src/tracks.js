@@ -1,13 +1,5 @@
 const container = document.getElementById("container");
 
-async function loadJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-  return await response.json();
-}
-
 function openTrack(track) {
     if (typeof track != "string") return;
     window.navigation.navigate("notebook.html?track=" + track);
