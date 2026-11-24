@@ -7,7 +7,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "const": "https://json-schema.org/draft/2020-12/schema"
+      "description": "URI of the JSON Schema this file conforms to."
     },
     "title": {
       "type": "string",
