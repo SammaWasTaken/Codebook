@@ -15,9 +15,6 @@
     const send = (msg) => post({ ...msg, token });
 
     const BLOCKED = [
-        "fetch", "XMLHttpRequest", "WebSocket", "WebTransport", "EventSource",
-        "Request", "Response", "Headers", "RTCPeerConnection",
-
         "importScripts", "Worker", "SharedWorker", "WebAssembly",
 
         "indexedDB", "IDBFactory", "caches", "CacheStorage", "BroadcastChannel",

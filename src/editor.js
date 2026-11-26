@@ -171,7 +171,10 @@ async function startWorker() {
     btn.disabled = true;
     btn.textContent = "Loading...";
 
-    let req = await loadText(`${trackurl}${trackData.runtimeWorker}`);
+    let url = "runtimeWorker" in trackData 
+        ? `${trackurl}${trackData.runtimeWorker}` 
+        : `runtimeWorkers/${trackData.language}.js`;
+    let req = await loadText(url);
 
     if (req) {
         let blob = new Blob([req], {
